@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -e 's/\\\\.graph-/\\\\.teacher-dash-graph-/g' \"src/pages/CompanyDashboard/SummaryGraph.css\")",
+      "Bash(sed -e 's/\\\\.mini-cal-/\\\\.teacher-dash-cal-/g' \"src/pages/CompanyDashboard/CompanyCallendarNavibator.css\")",
+      "Bash(sort -k6,7)"
+    ]
+  }
+}
