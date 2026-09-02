@@ -1,0 +1,676 @@
+.teacher-dash-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.teacher-dash-secondary-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1.1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (max-width: 1180px) {
+  .teacher-dash-secondary-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .teacher-dash-secondary-row > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .teacher-dash-secondary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-dash-secondary-row > :first-child {
+    grid-column: auto;
+  }
+}
+
+.teacher-dash-loading {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.teacher-dash-notice {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: #fdf2d0;
+  color: #a3760a;
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.teacher-dash-overview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.teacher-dash-overview-header h1 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  color: var(--text-h);
+  margin: 0 0 4px;
+}
+
+.teacher-dash-overview-header > div > p {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.teacher-dash-daterange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text-h);
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.teacher-dash-daterange:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.teacher-dash-daterange-wrap {
+  position: relative;
+}
+
+.teacher-dash-daterange-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.teacher-dash-daterange-menu button {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: none;
+  color: var(--text-h);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.teacher-dash-daterange-menu button:hover {
+  background: var(--bg-soft);
+}
+
+.teacher-dash-daterange-menu button.is-active {
+  color: var(--brand);
+  background: var(--brand-light);
+}
+
+.teacher-dash-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.teacher-dash-stat-card {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 6%, #fff) 0%, #fff 55%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.teacher-dash-stat-card::before {
+  content: '';
+  position: absolute;
+  top: -36px;
+  right: -36px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.teacher-dash-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.teacher-dash-stat-watermark {
+  position: absolute;
+  bottom: -14px;
+  right: -8px;
+  color: var(--accent);
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+.teacher-dash-stat-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.teacher-dash-stat-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.teacher-dash-stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.teacher-dash-stat-value {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 6px;
+}
+
+@media (max-width: 900px) {
+  .teacher-dash-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .teacher-dash-overview-header h1 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .teacher-dash-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.teacher-dash-today-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.teacher-dash-today-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.teacher-dash-today-header h2 {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.teacher-dash-today-view-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.teacher-dash-today-view-link:hover {
+  text-decoration: underline;
+}
+
+.teacher-dash-today-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.teacher-dash-today-empty-msg {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin: 8px 0 0;
+}
+
+.teacher-dash-today-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.teacher-dash-today-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.teacher-dash-today-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 78px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.teacher-dash-today-time-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--text-soft);
+}
+
+.teacher-dash-today-time-dot.is-progress {
+  background: #2f6bff;
+}
+
+.teacher-dash-today-time-dot.is-upcoming {
+  background: #1fa971;
+}
+
+.teacher-dash-today-time-dot.is-scheduled {
+  background: #8c8177;
+}
+
+.teacher-dash-today-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.teacher-dash-today-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+
+.teacher-dash-today-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-dash-today-status {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.teacher-dash-today-status.is-progress {
+  background: #e6f0ff;
+  color: #2f6bff;
+}
+
+.teacher-dash-today-status.is-upcoming {
+  background: #e3f7ec;
+  color: #1fa971;
+}
+
+.teacher-dash-today-status.is-scheduled {
+  background: var(--bg-soft);
+  color: var(--text-soft);
+}
+.teacher-dash-graph-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.teacher-dash-graph-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.teacher-dash-graph-header h2 {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.teacher-dash-graph-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.teacher-dash-graph-range:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.teacher-dash-graph-chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.teacher-dash-graph-stats-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.teacher-dash-graph-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.teacher-dash-graph-stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.teacher-dash-graph-stat-value {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.teacher-dash-graph-stats-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border);
+}
+
+.teacher-dash-graph-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.teacher-dash-graph-grid-line {
+  stroke: var(--border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.teacher-dash-graph-tick-label,
+.teacher-dash-graph-x-label,
+.teacher-dash-graph-x-sublabel {
+  fill: var(--text-soft);
+  font-size: 11px;
+  font-family: var(--sans);
+}
+
+.teacher-dash-graph-x-label {
+  fill: var(--text);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.teacher-dash-graph-line {
+  stroke: var(--brand);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.teacher-dash-graph-point {
+  fill: #fff;
+  stroke: var(--brand);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+  transition: r 0.15s ease;
+}
+
+.teacher-dash-graph-hover-guide {
+  stroke: var(--brand);
+  stroke-opacity: 0.25;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.teacher-dash-graph-tooltip {
+  position: absolute;
+  transform: translate(-50%, -130%);
+  background: var(--navy);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.teacher-dash-graph-tooltip strong {
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.teacher-dash-cal-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.teacher-dash-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.teacher-dash-cal-header h2 {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  color: var(--text-h);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.teacher-dash-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.teacher-dash-cal-nav:hover {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.teacher-dash-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.teacher-dash-cal-weekdays span {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  padding: 4px 0;
+}
+
+.teacher-dash-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.teacher-dash-cal-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: default;
+}
+
+.teacher-dash-cal-cell.is-empty {
+  cursor: default;
+}
+
+.teacher-dash-cal-cell.is-today {
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+}
+
+.teacher-dash-cal-dots {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  bottom: 3px;
+}
+
+.teacher-dash-cal-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+
+.teacher-dash-cal-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.teacher-dash-cal-next {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+
+.teacher-dash-cal-next .teacher-dash-cal-dot {
+  width: 6px;
+  height: 6px;
+}
+
+.teacher-dash-cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.teacher-dash-cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.teacher-dash-cal-legend-item .teacher-dash-cal-dot {
+  width: 7px;
+  height: 7px;
+}

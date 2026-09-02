@@ -1,0 +1,118 @@
+.footer {
+  position: relative;
+  background: var(--bg-soft);
+  border-top: 1px solid var(--border);
+  margin-top: 80px;
+}
+
+.footer-accent {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-sky), var(--brand), var(--navy));
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 56px 24px 40px;
+}
+
+.footer-brand {
+  max-width: 320px;
+}
+
+.footer-brand p {
+  margin-top: 14px;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+}
+
+.footer-col h4 {
+  position: relative;
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--text-h);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+}
+
+.footer-col h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand);
+}
+
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-col button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--text-soft);
+}
+
+.footer-col button:hover {
+  color: var(--brand);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+}
+
+.footer-bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.footer-top-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.footer-top-btn:hover {
+  color: var(--brand);
+  border-color: var(--brand-light);
+  transform: translateY(-2px);
+}

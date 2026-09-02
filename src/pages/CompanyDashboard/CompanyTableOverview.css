@@ -1,0 +1,138 @@
+.schedule-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.schedule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.schedule-header h2 {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.schedule-view-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.schedule-view-link:hover {
+  text-decoration: underline;
+}
+
+.schedule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.schedule-empty-msg {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin: 8px 0 0;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.schedule-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.schedule-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 78px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.schedule-time-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--text-soft);
+}
+
+.schedule-time-dot.is-progress {
+  background: #2f6bff;
+}
+
+.schedule-time-dot.is-upcoming {
+  background: #1fa971;
+}
+
+.schedule-time-dot.is-scheduled {
+  background: #8c8177;
+}
+
+.schedule-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+
+.schedule-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.schedule-status {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.schedule-status.is-progress {
+  background: #e6f0ff;
+  color: #2f6bff;
+}
+
+.schedule-status.is-upcoming {
+  background: #e3f7ec;
+  color: #1fa971;
+}
+
+.schedule-status.is-scheduled {
+  background: var(--bg-soft);
+  color: var(--text-soft);
+}

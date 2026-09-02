@@ -1,0 +1,79 @@
+.student-credit-balance-value {
+  font-family: var(--display);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 4px 0 0;
+  line-height: 1;
+}
+
+.student-credit-balance-label {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin: 6px 0 0;
+}
+
+.student-credit-explain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.student-credit-explain-list li {
+  font-size: 0.86rem;
+  color: var(--text);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+
+.student-credit-explain-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+.student-credit-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.student-credit-contact-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.student-credit-contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  color: var(--brand);
+  flex-shrink: 0;
+}
+
+.student-credit-contact-row a,
+.student-credit-contact-row span {
+  font-size: 0.86rem;
+  color: var(--text-h);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.student-credit-contact-row a:hover {
+  color: var(--brand);
+}

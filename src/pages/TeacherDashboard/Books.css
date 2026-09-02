@@ -1,0 +1,350 @@
+.teacher-books-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.teacher-books-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.teacher-books-page-header h1 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.teacher-books-page-header .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Book list panel --- */
+
+.teacher-books-list-panel {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.teacher-books-loading {
+  padding: 20px 0;
+  font-size: 0.88rem;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.teacher-books-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 0;
+  color: var(--text-soft);
+}
+
+.teacher-books-empty svg {
+  color: var(--border);
+}
+
+.teacher-books-empty p {
+  font-size: 0.86rem;
+  margin: 0;
+}
+
+.teacher-books-table-wrap {
+  overflow-x: auto;
+}
+
+.teacher-books-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.teacher-books-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.teacher-books-table td {
+  padding: 12px;
+  font-size: 0.86rem;
+  color: var(--text-h);
+  border-top: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.teacher-books-table tbody tr:hover {
+  background: var(--bg-soft);
+}
+
+.teacher-books-row-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2f6bff;
+  color: #fff;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.teacher-books-category-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.teacher-books-owner-you {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.teacher-books-visibility-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.teacher-books-visibility-badge.is-public {
+  background: #e3f7ec;
+  color: #1fa971;
+}
+
+.teacher-books-visibility-badge.is-private {
+  background: var(--bg-soft);
+  color: var(--text-soft);
+}
+
+.teacher-books-open-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.teacher-books-open-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Upload Book modal --- */
+
+.teacher-books-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 27, 82, 0.45);
+  padding: 20px;
+}
+
+.teacher-books-modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  min-width: 0;
+  background: transparent;
+  border-radius: var(--radius-lg);
+}
+
+.teacher-books-modal-scroll {
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.teacher-books-modal-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+
+.teacher-books-panel {
+  min-width: 0;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.teacher-books-panel-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.teacher-books-panel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #2f6bff;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.teacher-books-panel-header h2 {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--text-h);
+  margin: 0 0 2px;
+}
+
+.teacher-books-panel-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.teacher-books-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.teacher-books-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.teacher-books-form input,
+.teacher-books-form select {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text-h);
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+
+.teacher-books-form input:focus,
+.teacher-books-form select:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.teacher-books-textarea {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text-h);
+  font-size: 0.88rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.teacher-books-textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.teacher-books-field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.teacher-books-visibility-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.teacher-books-visibility-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.teacher-books-visibility-pill input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.teacher-books-visibility-pill.is-active {
+  border-color: var(--brand);
+  background: var(--brand-light);
+  color: var(--brand);
+}
+
+.teacher-books-visibility-help {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+.teacher-books-message {
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.teacher-books-message.is-success {
+  color: #1fa971;
+}
+
+.teacher-books-message.is-error {
+  color: #e5484d;
+}

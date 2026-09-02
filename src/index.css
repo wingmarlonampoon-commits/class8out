@@ -1,0 +1,169 @@
+:root {
+  /* Blue, sampled straight from the logo's own gradient — the only brand hue. */
+  --brand: #1447e6;
+  --brand-dark: #0f34b0;
+  --brand-light: #e8f0ff;
+  --brand-sky: #34c0fd;
+  --navy: #0c1b52;
+  --navy-soft: #16265e;
+
+  --text: #6b6058;
+  --text-h: #241d17;
+  --text-soft: #8c8177;
+  --bg: #ffffff;
+  --bg-soft: #f6f6f8;
+  --bg-tint: #eaf1ff;
+  --border: #e7e5e2;
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 12px 28px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 26px 60px rgba(20, 71, 230, 0.14);
+
+  --sans: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --display: 'Fraunces', Georgia, serif;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+
+  font: 16px/1.5 var(--sans);
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+h1, h2 {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.anchor-section {
+  scroll-margin-top: 76px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-sky), var(--brand));
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(20, 71, 230, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--brand-sky), var(--brand-dark));
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--brand);
+  border-color: var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--brand-light);
+  border-color: var(--brand-light);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-light);
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+
+.section-head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 48px;
+}
+
+.section-head h2 {
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  color: var(--text-h);
+  margin: 10px 0 14px;
+  letter-spacing: -0.01em;
+}
+
+.section-head p {
+  color: var(--text-soft);
+  font-size: 1.05rem;
+}
+
+@media (max-width: 640px) {
+  :root {
+    font-size: 15px;
+  }
+}

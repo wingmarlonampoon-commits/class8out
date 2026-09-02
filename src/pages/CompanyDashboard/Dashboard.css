@@ -1,0 +1,32 @@
+.dash-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dash-row-secondary {
+  display: grid;
+  grid-template-columns: 1.6fr 1.1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (max-width: 1180px) {
+  .dash-row-secondary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dash-row-secondary > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .dash-row-secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-row-secondary > :first-child {
+    grid-column: auto;
+  }
+}
