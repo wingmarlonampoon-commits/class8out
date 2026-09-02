@@ -18,12 +18,24 @@ type BookRow = {
   ownerName?: string
 }
 
-type Message = { type: 'success' | 'error'; text: string }
+type OwnerRow = {
+  company_code: string
+  company_name: string
+}
+
+type Message = {
+  type: 'success' | 'error'
+  text: string
+}
 
 const CATEGORIES = ['Textbook', 'Workbook', 'Reference', 'Worksheet', 'Other']
 
 const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
 function Books() {
   const { session } = useAuth()
@@ -56,7 +68,12 @@ function Books() {
       .eq('email', adminEmail)
       .single()
       .then(({ data }) => {
-        if (data) setCompany({ code: data.CompanyCode, name: data.company_name })
+        if (data) {
+          setCompany({
+            code: data.CompanyCode,
+            name: data.company_name,
+          })
+        }
       })
   }, [session])
 
@@ -65,7 +82,8 @@ function Books() {
 
     setListLoading(true)
 
-    const columns = 'id, title, description, subject, category, book_url, PublicAvailability, created_at, company_code'
+    const columns =
+      'id, title, description, subject, category, book_url, PublicAvailability, created_at, company_code'
 
     // Own company's full catalog, plus any other company's books they've
     // marked public — books has no FK to company_registration, so the
@@ -73,17 +91,58 @@ function Books() {
     // (public_book_owner_names) rather than a broad company_registration
     // grant, which would over-expose that company's email/phone/settings.
     Promise.all([
-      supabase.from('books').select(columns).eq('company_code', company.code),
-      supabase.from('books').select(columns).eq('PublicAvailability', true).neq('company_code', company.code),
+      supabase
+        .from('books')
+        .select(columns)
+        .eq('company_code', company.code),
+
+      supabase
+        .from('books')
+        .select(columns)
+        .eq('PublicAvailability', true)
+        .neq('company_code', company.code),
     ]).then(async ([own, pub]) => {
-      const merged = [...((own.data as BookRow[]) ?? []), ...((pub.data as BookRow[]) ?? [])]
+      const merged: BookRow[] = [
+        ...((own.data as BookRow[]) ?? []),
+        ...((pub.data as BookRow[]) ?? []),
+      ]
+
       merged.sort((a, b) => b.created_at.localeCompare(a.created_at))
 
-      const foreignCodes = [...new Set(merged.map((b) => b.company_code).filter((code) => code !== company.code))]
-      const { data: owners } = await supabase.rpc('public_book_owner_names', { p_codes: foreignCodes })
-      const nameMap = new Map<string, string>([[company.code, company.name], ...((owners ?? []).map((o) => [o.company_code, o.company_name]) as [string, string][])])
+      const foreignCodes = [
+        ...new Set(
+          merged
+            .map((b) => b.company_code)
+            .filter((code) => code !== company.code),
+        ),
+      ]
 
-      setBooks(merged.map((b) => ({ ...b, ownerName: nameMap.get(b.company_code) ?? b.company_code })))
+      const { data: owners } = await supabase.rpc(
+        'public_book_owner_names',
+        {
+          p_codes: foreignCodes,
+        },
+      )
+
+      // Explicitly type the RPC response so TypeScript knows what
+      // company_code and company_name are.
+      const ownerRows: OwnerRow[] = (owners ?? []) as OwnerRow[]
+
+      const foreignNames: [string, string][] = ownerRows.map(
+        (o): [string, string] => [o.company_code, o.company_name],
+      )
+
+      const nameMap = new Map<string, string>([
+        [company.code, company.name],
+        ...foreignNames,
+      ])
+
+      const mergedWithOwners: BookRow[] = merged.map((b) => ({
+        ...b,
+        ownerName: nameMap.get(b.company_code) ?? b.company_code,
+      }))
+
+      setBooks(mergedWithOwners)
       setListLoading(false)
     })
   }, [company, reloadToken])
@@ -110,42 +169,64 @@ function Books() {
     setMessage(null)
 
     if (!company) {
-      setMessage({ type: 'error', text: 'Could not determine your company. Please try again.' })
+      setMessage({
+        type: 'error',
+        text: 'Could not determine your company. Please try again.',
+      })
       return
     }
 
-    const finalSubject = subject === 'Other' ? customSubject.trim() : subject
-    const finalCategory = category === 'Other' ? customCategory.trim() : category
+    const finalSubject =
+      subject === 'Other' ? customSubject.trim() : subject
+
+    const finalCategory =
+      category === 'Other' ? customCategory.trim() : category
 
     if (subject === 'Other' && !finalSubject) {
-      setMessage({ type: 'error', text: 'Please enter a subject.' })
+      setMessage({
+        type: 'error',
+        text: 'Please enter a subject.',
+      })
       return
     }
+
     if (category === 'Other' && !finalCategory) {
-      setMessage({ type: 'error', text: 'Please enter a category.' })
+      setMessage({
+        type: 'error',
+        text: 'Please enter a category.',
+      })
       return
     }
 
     setLoading(true)
 
-    const { error: insertError } = await supabase.from('books').insert({
-      company_code: company.code,
-      title: title.trim(),
-      description: description.trim() || null,
-      subject: finalSubject,
-      category: finalCategory,
-      book_url: bookUrl,
-      PublicAvailability: isPublic,
-    })
+    const { error: insertError } = await supabase
+      .from('books')
+      .insert({
+        company_code: company.code,
+        title: title.trim(),
+        description: description.trim() || null,
+        subject: finalSubject,
+        category: finalCategory,
+        book_url: bookUrl,
+        PublicAvailability: isPublic,
+      })
 
     setLoading(false)
 
     if (insertError) {
-      setMessage({ type: 'error', text: 'Could not save the book. Please try again.' })
+      setMessage({
+        type: 'error',
+        text: 'Could not save the book. Please try again.',
+      })
       return
     }
 
-    setMessage({ type: 'success', text: 'Book added.' })
+    setMessage({
+      type: 'success',
+      text: 'Book added.',
+    })
+
     resetForm()
     setReloadToken((n) => n + 1)
   }
@@ -154,7 +235,11 @@ function Books() {
     <div className="books-page">
       <div className="books-page-header">
         <h1>Books</h1>
-        <button className="btn btn-primary" onClick={openModal}>
+
+        <button
+          className="btn btn-primary"
+          onClick={openModal}
+        >
           <Link2 size={16} /> Add Book
         </button>
       </div>
@@ -181,6 +266,7 @@ function Books() {
                   <th></th>
                 </tr>
               </thead>
+
               <tbody>
                 {books.map((b) => (
                   <tr key={b.id}>
@@ -188,24 +274,50 @@ function Books() {
                       <span className="books-row-avatar">
                         <BookOpen size={14} />
                       </span>
+
                       {b.title || '—'}
                     </td>
+
                     <td>
                       {b.ownerName ?? b.company_code}
-                      {b.company_code === company?.code && <span className="books-owner-you"> (You)</span>}
+
+                      {b.company_code === company?.code && (
+                        <span className="books-owner-you">
+                          {' '}
+                          (You)
+                        </span>
+                      )}
                     </td>
+
                     <td>{b.subject || '—'}</td>
+
                     <td>
-                      <span className="books-category-badge">{b.category || '—'}</span>
+                      <span className="books-category-badge">
+                        {b.category || '—'}
+                      </span>
                     </td>
+
                     <td>
-                      <span className={`books-visibility-badge ${b.PublicAvailability ? 'is-public' : 'is-private'}`}>
+                      <span
+                        className={`books-visibility-badge ${
+                          b.PublicAvailability
+                            ? 'is-public'
+                            : 'is-private'
+                        }`}
+                      >
                         {b.PublicAvailability ? 'Public' : 'Private'}
                       </span>
                     </td>
+
                     <td>{formatDate(b.created_at)}</td>
+
                     <td>
-                      <a href={b.book_url} target="_blank" rel="noreferrer" className="books-open-link">
+                      <a
+                        href={b.book_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="books-open-link"
+                      >
                         Open <ExternalLink size={13} />
                       </a>
                     </td>
@@ -218,9 +330,19 @@ function Books() {
       </div>
 
       {showModal && (
-        <div className="books-modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="books-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="books-modal-close" aria-label="Close" onClick={() => setShowModal(false)}>
+        <div
+          className="books-modal-overlay"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="books-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="books-modal-close"
+              aria-label="Close"
+              onClick={() => setShowModal(false)}
+            >
               <X size={18} />
             </button>
 
@@ -230,15 +352,23 @@ function Books() {
                   <span className="books-panel-icon">
                     <Link2 size={18} />
                   </span>
+
                   <div>
                     <h2>Add Book</h2>
-                    <p className="books-panel-subtitle">Link a book or resource for your students.</p>
+                    <p className="books-panel-subtitle">
+                      Link a book or resource for your students.
+                    </p>
                   </div>
                 </div>
 
-                <form className="books-form" onSubmit={handleSubmit} autoComplete="off">
+                <form
+                  className="books-form"
+                  onSubmit={handleSubmit}
+                  autoComplete="off"
+                >
                   <label>
                     Book Title
+
                     <input
                       type="text"
                       value={title}
@@ -251,10 +381,13 @@ function Books() {
 
                   <label>
                     Description
+
                     <textarea
                       className="books-textarea"
                       value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      onChange={(e) =>
+                        setDescription(e.target.value)
+                      }
                       rows={3}
                       placeholder="What this book covers, who it's for…"
                     />
@@ -262,7 +395,13 @@ function Books() {
 
                   <label>
                     Subject
-                    <select value={subject} onChange={(e) => setSubject(e.target.value)}>
+
+                    <select
+                      value={subject}
+                      onChange={(e) =>
+                        setSubject(e.target.value)
+                      }
+                    >
                       {ESL_SUBJECTS.map((s) => (
                         <option key={s} value={s}>
                           {s}
@@ -274,10 +413,13 @@ function Books() {
                   {subject === 'Other' && (
                     <label>
                       Custom Subject
+
                       <input
                         type="text"
                         value={customSubject}
-                        onChange={(e) => setCustomSubject(e.target.value)}
+                        onChange={(e) =>
+                          setCustomSubject(e.target.value)
+                        }
                         placeholder="Enter a subject"
                         autoComplete="off"
                         required
@@ -287,7 +429,13 @@ function Books() {
 
                   <label>
                     Category
-                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
+
+                    <select
+                      value={category}
+                      onChange={(e) =>
+                        setCategory(e.target.value)
+                      }
+                    >
                       {CATEGORIES.map((c) => (
                         <option key={c} value={c}>
                           {c}
@@ -299,10 +447,13 @@ function Books() {
                   {category === 'Other' && (
                     <label>
                       Custom Category
+
                       <input
                         type="text"
                         value={customCategory}
-                        onChange={(e) => setCustomCategory(e.target.value)}
+                        onChange={(e) =>
+                          setCustomCategory(e.target.value)
+                        }
                         placeholder="Enter a category"
                         autoComplete="off"
                         required
@@ -312,10 +463,13 @@ function Books() {
 
                   <label>
                     Book URL
+
                     <input
                       type="url"
                       value={bookUrl}
-                      onChange={(e) => setBookUrl(e.target.value)}
+                      onChange={(e) =>
+                        setBookUrl(e.target.value)
+                      }
                       placeholder="https://…"
                       autoComplete="off"
                       required
@@ -323,17 +477,38 @@ function Books() {
                   </label>
 
                   <div className="books-visibility-group">
-                    <span className="books-field-label">Visibility</span>
+                    <span className="books-field-label">
+                      Visibility
+                    </span>
+
                     <div className="books-visibility-toggle">
-                      <label className={`books-visibility-pill ${isPublic ? 'is-active' : ''}`}>
-                        <input type="radio" checked={isPublic} onChange={() => setIsPublic(true)} />
+                      <label
+                        className={`books-visibility-pill ${
+                          isPublic ? 'is-active' : ''
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          checked={isPublic}
+                          onChange={() => setIsPublic(true)}
+                        />
                         Public
                       </label>
-                      <label className={`books-visibility-pill ${!isPublic ? 'is-active' : ''}`}>
-                        <input type="radio" checked={!isPublic} onChange={() => setIsPublic(false)} />
+
+                      <label
+                        className={`books-visibility-pill ${
+                          !isPublic ? 'is-active' : ''
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          checked={!isPublic}
+                          onChange={() => setIsPublic(false)}
+                        />
                         Private
                       </label>
                     </div>
+
                     <p className="books-visibility-help">
                       {isPublic
                         ? 'Anyone within the Class8out users can view this book and use it to their lessons.'
@@ -341,9 +516,19 @@ function Books() {
                     </p>
                   </div>
 
-                  {message && <p className={`books-message is-${message.type}`}>{message.text}</p>}
+                  {message && (
+                    <p
+                      className={`books-message is-${message.type}`}
+                    >
+                      {message.text}
+                    </p>
+                  )}
 
-                  <button className="btn btn-primary" type="submit" disabled={loading || !company}>
+                  <button
+                    className="btn btn-primary"
+                    type="submit"
+                    disabled={loading || !company}
+                  >
                     {loading ? 'Adding…' : 'Add Book'}
                   </button>
                 </form>
