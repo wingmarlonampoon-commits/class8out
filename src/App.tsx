@@ -37,7 +37,7 @@ import StudentCredit from './pages/StudentDashboard/Credit'
 import './App.css'
 
 const noChromeExact = ['/login', '/register']
-const dashboardPrefixes = ['/company-dashboard', '/teacher-dashboard', '/student-dashboard']
+const dashboardPrefixes = ['/CompanyDashboard', '/TeacherDashboard', '/StudentDashboard']
 
 function App() {
   const { pathname } = useLocation()
