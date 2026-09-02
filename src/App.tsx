@@ -58,7 +58,7 @@ function App() {
             <Route path="/register" element={<Register />} />
 
             <Route
-              path="/company-dashboard"
+              path="/CompanyDashboard"
               element={
                 <PrivateRoute allowedRole={ROLE.COMPANY}>
                   <DashboardLayout role={ROLE.COMPANY} />
@@ -78,7 +78,7 @@ function App() {
             </Route>
 
             <Route
-              path="/teacher-dashboard"
+              path="/TeacherDashboard"
               element={
                 <PrivateRoute allowedRole={ROLE.TEACHER}>
                   <DashboardLayout role={ROLE.TEACHER} />
@@ -97,7 +97,7 @@ function App() {
             </Route>
 
             <Route
-              path="/student-dashboard"
+              path="/StudentDashboard"
               element={
                 <PrivateRoute allowedRole={ROLE.STUDENT}>
                   <DashboardLayout role={ROLE.STUDENT} />
