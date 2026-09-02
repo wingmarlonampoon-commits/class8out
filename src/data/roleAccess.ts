@@ -31,9 +31,9 @@ export const roleAccess: Record<Role, string[]> = {
 }
 
 export const roleBasePath: Record<Role, string> = {
-  [ROLE.COMPANY]: '/company-dashboard',
-  [ROLE.TEACHER]: '/teacher-dashboard',
-  [ROLE.STUDENT]: '/student-dashboard',
+  [ROLE.COMPANY]: '/CompanyDashboard',
+  [ROLE.TEACHER]: '/TeacherDashboard',
+  [ROLE.STUDENT]: '/StudentDashboard',
 }
 
 export const roleLabel: Record<Role, string> = {
