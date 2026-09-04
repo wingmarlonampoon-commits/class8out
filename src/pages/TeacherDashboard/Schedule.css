@@ -506,7 +506,8 @@
 .teacher-schedule-cell-modal {
   position: relative;
   width: 100%;
-  max-width: 560px;
+  max-width: 1400px;
+  height:80%;
   padding: 24px;
   border-radius: var(--radius-lg);
   background: #fff;
@@ -608,7 +609,8 @@
   gap: 6px;
   padding: 14px;
   border-radius: var(--radius-md);
-  background: var(--bg-soft);
+  height: -webkit-fill-available;
+  background: var(--bg-soft);overflow-y: auto;
 }
 
 .teacher-schedule-booked-name {
@@ -663,7 +665,7 @@
 
 .teacher-schedule-notes-input {
   width: 100%;
-  min-height: 96px;
+  min-height: 396px;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
@@ -684,6 +686,13 @@
 .teacher-schedule-cancel-btn {
   background: #e5484d;
   border-color: #e5484d;
+  align-self: flex-start;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    color: #FFFFFF;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;white-space: unset;
 }
 
 .teacher-schedule-cancel-btn:hover {
