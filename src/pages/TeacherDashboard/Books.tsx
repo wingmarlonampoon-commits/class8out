@@ -15,6 +15,7 @@ type BookRow = {
   PublicAvailability?: boolean
   created_at: string
   company_code?: string
+  teacher_id?: string
   ownerName?: string
   isOwn?: boolean
 }
@@ -22,6 +23,11 @@ type BookRow = {
 type OwnerRow = {
   company_code: string
   company_name: string
+}
+
+type FreelanceOwnerRow = {
+  teacher_id: string
+  teacher_name: string
 }
 
 type Message = {
@@ -36,6 +42,9 @@ const CATEGORIES = [
   'Worksheet',
   'Other',
 ]
+
+const FREELANCE_BOOK_COLUMNS =
+  'id, title, description, subject, category, book_url, created_at, PublicAvailability, teacher_id'
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', {
@@ -60,6 +69,7 @@ function Books() {
   const [category, setCategory] = useState(CATEGORIES[0])
   const [customCategory, setCustomCategory] = useState('')
   const [bookUrl, setBookUrl] = useState('')
+  const [isPublic, setIsPublic] = useState(true)
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<Message | null>(null)
@@ -101,23 +111,58 @@ function Books() {
       )
     }
 
+    // Same pattern as resolveForeignOwnerNames, but for freelance teachers
+    // who've made a book public — resolves only id -> display name via a
+    // narrow RPC, never the full teacher record.
+    async function resolveFreelanceOwnerNames(
+      teacherIds: string[],
+    ): Promise<Map<string, string>> {
+      if (teacherIds.length === 0) {
+        return new Map<string, string>()
+      }
+
+      const { data } = await supabase.rpc(
+        'public_freelance_book_owner_names',
+        {
+          p_teacher_ids: teacherIds,
+        },
+      )
+
+      const ownerRows: FreelanceOwnerRow[] =
+        (data ?? []) as FreelanceOwnerRow[]
+
+      return new Map<string, string>(
+        ownerRows.map(
+          (o): [string, string] => [
+            o.teacher_id,
+            o.teacher_name,
+          ],
+        ),
+      )
+    }
+
     if (identity.kind === 'freelance') {
-      // Freelance teachers own a private freelance_books table (never
-      // public — freelance_books has no PublicAvailability column at all),
-      // but should still see public books shared by companies.
+      // Freelance teachers own a private-by-default freelance_books table,
+      // but can mark individual books PublicAvailability=true, in which
+      // case other freelance teachers and company teachers should see them
+      // too — same as a company marking a book public.
       Promise.all([
         supabase
           .from('freelance_books')
-          .select(
-            'id, title, description, subject, category, book_url, created_at',
-          )
+          .select(FREELANCE_BOOK_COLUMNS)
           .eq('teacher_id', identity.teacherId),
 
         supabase
           .from('books')
           .select(bookColumns)
           .eq('PublicAvailability', true),
-      ]).then(async ([own, pub]) => {
+
+        supabase
+          .from('freelance_books')
+          .select(FREELANCE_BOOK_COLUMNS)
+          .eq('PublicAvailability', true)
+          .neq('teacher_id', identity.teacherId),
+      ]).then(async ([own, pubCompanyBooks, pubFreelanceBooks]) => {
         const ownRows: BookRow[] = (
           (own.data as BookRow[]) ?? []
         ).map((b) => ({
@@ -126,12 +171,15 @@ function Books() {
           ownerName: 'You',
         }))
 
-        const publicRows: BookRow[] =
-          (pub.data as BookRow[]) ?? []
+        const publicCompanyRows: BookRow[] =
+          (pubCompanyBooks.data as BookRow[]) ?? []
+
+        const publicFreelanceRows: BookRow[] =
+          (pubFreelanceBooks.data as BookRow[]) ?? []
 
         const publicCodes = [
           ...new Set(
-            publicRows
+            publicCompanyRows
               .map((b) => b.company_code)
               .filter(
                 (code): code is string =>
@@ -140,20 +188,43 @@ function Books() {
           ),
         ]
 
-        const nameMap =
-          await resolveForeignOwnerNames(publicCodes)
+        const publicTeacherIds = [
+          ...new Set(
+            publicFreelanceRows
+              .map((b) => b.teacher_id)
+              .filter(
+                (id): id is string => Boolean(id),
+              ),
+          ),
+        ]
 
-        const resolvedPublicRows: BookRow[] =
-          publicRows.map((b) => ({
+        const [nameMap, freelanceNameMap] =
+          await Promise.all([
+            resolveForeignOwnerNames(publicCodes),
+            resolveFreelanceOwnerNames(publicTeacherIds),
+          ])
+
+        const resolvedPublicCompanyRows: BookRow[] =
+          publicCompanyRows.map((b) => ({
             ...b,
             ownerName:
               nameMap.get(b.company_code ?? '') ??
               b.company_code,
           }))
 
+        const resolvedPublicFreelanceRows: BookRow[] =
+          publicFreelanceRows.map((b) => ({
+            ...b,
+            isOwn: false,
+            ownerName:
+              freelanceNameMap.get(b.teacher_id ?? '') ??
+              'Another teacher',
+          }))
+
         const merged: BookRow[] = [
           ...ownRows,
-          ...resolvedPublicRows,
+          ...resolvedPublicCompanyRows,
+          ...resolvedPublicFreelanceRows,
         ]
 
         merged.sort((a, b) =>
@@ -170,7 +241,8 @@ function Books() {
     const companyCode = identity.companyCode
     const companyName = identity.companyName
 
-    // Own company's full catalog, plus any other company's public books.
+    // Own company's full catalog, other companies' public books, and any
+    // freelance teacher's public books.
     Promise.all([
       supabase
         .from('books')
@@ -182,7 +254,12 @@ function Books() {
         .select(bookColumns)
         .eq('PublicAvailability', true)
         .neq('company_code', companyCode),
-    ]).then(async ([own, pub]) => {
+
+      supabase
+        .from('freelance_books')
+        .select(FREELANCE_BOOK_COLUMNS)
+        .eq('PublicAvailability', true),
+    ]).then(async ([own, pub, pubFreelanceBooks]) => {
       const merged: BookRow[] = [
         ...((own.data as BookRow[]) ?? []),
         ...((pub.data as BookRow[]) ?? []),
@@ -203,8 +280,24 @@ function Books() {
         ),
       ]
 
-      const foreignNames =
-        await resolveForeignOwnerNames(foreignCodes)
+      const publicFreelanceRows: BookRow[] =
+        (pubFreelanceBooks.data as BookRow[]) ?? []
+
+      const teacherIds = [
+        ...new Set(
+          publicFreelanceRows
+            .map((b) => b.teacher_id)
+            .filter(
+              (id): id is string => Boolean(id),
+            ),
+        ),
+      ]
+
+      const [foreignNames, freelanceNameMap] =
+        await Promise.all([
+          resolveForeignOwnerNames(foreignCodes),
+          resolveFreelanceOwnerNames(teacherIds),
+        ])
 
       const nameMap = new Map<string, string>([
         [companyCode, companyName],
@@ -220,7 +313,25 @@ function Books() {
             b.company_code,
         }))
 
-      setBooks(mergedWithOwners)
+      const resolvedFreelanceRows: BookRow[] =
+        publicFreelanceRows.map((b) => ({
+          ...b,
+          isOwn: false,
+          ownerName:
+            freelanceNameMap.get(b.teacher_id ?? '') ??
+            'Independent teacher',
+        }))
+
+      const all = [
+        ...mergedWithOwners,
+        ...resolvedFreelanceRows,
+      ]
+
+      all.sort((a, b) =>
+        b.created_at.localeCompare(a.created_at),
+      )
+
+      setBooks(all)
       setListLoading(false)
     })
   }, [identity, reloadToken])
@@ -233,6 +344,7 @@ function Books() {
     setCategory(CATEGORIES[0])
     setCustomCategory('')
     setBookUrl('')
+    setIsPublic(true)
   }
 
   const openModal = () => {
@@ -288,6 +400,7 @@ function Books() {
           subject: finalSubject,
           category: finalCategory,
           book_url: bookUrl,
+          PublicAvailability: isPublic,
         })
 
     setLoading(false)
@@ -327,8 +440,8 @@ function Books() {
       {!isFreelance && identity && (
         <p className="teacher-books-field-help">
           Your company's book catalog, plus public books shared
-          by other companies — reach out to your admin to add or
-          change one.
+          by other companies and independent teachers — reach
+          out to your admin to add or change one.
         </p>
       )}
 
@@ -375,6 +488,13 @@ function Books() {
                     <td>
                       {b.ownerName}
 
+                      {isFreelance && b.isOwn && (
+                        <span className="teacher-books-owner-you">
+                          {' '}
+                          (You)
+                        </span>
+                      )}
+
                       {!isFreelance && b.isOwn && (
                         <span className="teacher-books-owner-you">
                           {' '}
@@ -392,28 +512,17 @@ function Books() {
                     </td>
 
                     <td>
-                      {(() => {
-                        // Freelance's own books have no
-                        // PublicAvailability column at all —
-                        // always private by design.
-                        const isPublic = isFreelance
-                          ? !b.isOwn
-                          : Boolean(b.PublicAvailability)
-
-                        return (
-                          <span
-                            className={`teacher-books-visibility-badge ${
-                              isPublic
-                                ? 'is-public'
-                                : 'is-private'
-                            }`}
-                          >
-                            {isPublic
-                              ? 'Public'
-                              : 'Private'}
-                          </span>
-                        )
-                      })()}
+                      <span
+                        className={`teacher-books-visibility-badge ${
+                          b.PublicAvailability
+                            ? 'is-public'
+                            : 'is-private'
+                        }`}
+                      >
+                        {b.PublicAvailability
+                          ? 'Public'
+                          : 'Private'}
+                      </span>
                     </td>
 
                     <td>
@@ -609,6 +718,50 @@ function Books() {
                       required
                     />
                   </label>
+
+                  <div className="teacher-books-visibility-group">
+                    <span className="teacher-books-field-label">
+                      Visibility
+                    </span>
+
+                    <div className="teacher-books-visibility-toggle">
+                      <label
+                        className={`teacher-books-visibility-pill ${
+                          isPublic ? 'is-active' : ''
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          checked={isPublic}
+                          onChange={() =>
+                            setIsPublic(true)
+                          }
+                        />
+                        Public
+                      </label>
+
+                      <label
+                        className={`teacher-books-visibility-pill ${
+                          !isPublic ? 'is-active' : ''
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          checked={!isPublic}
+                          onChange={() =>
+                            setIsPublic(false)
+                          }
+                        />
+                        Private
+                      </label>
+                    </div>
+
+                    <p className="teacher-books-visibility-help">
+                      {isPublic
+                        ? 'Any Class8out teacher — at any company, or freelance — can view this book and use it in their lessons.'
+                        : 'Only you can see this book.'}
+                    </p>
+                  </div>
 
                   {message && (
                     <p
