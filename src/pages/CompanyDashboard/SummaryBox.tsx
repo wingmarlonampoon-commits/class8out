@@ -119,12 +119,12 @@ function SummaryBox() {
   const now = getZonedNow(timezone)
   const range = getRange(rangeMode, now)
   const periodLabel = rangeMode === 'week' ? 'This Week' : 'This Month'
-  const bookingsHref = `/company-dashboard/bookings?from=${toDateKey(range.start)}&to=${toDateKey(range.end)}&status=booked`
+  const bookingsHref = `/CompanyDashboard/bookings?from=${toDateKey(range.start)}&to=${toDateKey(range.end)}&status=booked`
 
   const stats: Stat[] = [
     { icon: Calendar, tint: '#e6f0ff', color: '#2f6bff', label: `Bookings ${periodLabel}`, value: totalBookings, href: bookingsHref },
-    { icon: UserPlus, tint: '#e3f7ec', color: '#1fa971', label: 'Active Students', value: activeStudents, href: '/company-dashboard/students' },
-    { icon: UserCog, tint: '#f1e9fb', color: '#8b5cf6', label: 'Total Teachers', value: totalTeachers, href: '/company-dashboard/employees' },
+    { icon: UserPlus, tint: '#e3f7ec', color: '#1fa971', label: 'Active Students', value: activeStudents, href: '/CompanyDashboard/students' },
+    { icon: UserCog, tint: '#f1e9fb', color: '#8b5cf6', label: 'Total Teachers', value: totalTeachers, href: '/CompanyDashboard/employees' },
     {
       icon: TrendingUp,
       tint: '#dff5f7',

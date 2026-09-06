@@ -170,8 +170,8 @@ function Dashboard() {
   const now = getZonedNow(timezone)
   const range = getRange(rangeMode, now)
   const periodLabel = rangeMode === 'week' ? 'This Week' : 'This Month'
-  const bookingsHref = `/teacher-dashboard/bookings?from=${toDateKey(range.start)}&to=${toDateKey(range.end)}&status=booked`
-  const openHref = `/teacher-dashboard/bookings?from=${toDateKey(range.start)}&to=${toDateKey(range.end)}&status=open`
+  const bookingsHref = `/TeacherDashboard/bookings?from=${toDateKey(range.start)}&to=${toDateKey(range.end)}&status=booked`
+  const openHref = `/TeacherDashboard/bookings?from=${toDateKey(range.start)}&to=${toDateKey(range.end)}&status=open`
 
   const nowMinutes = now.getHours() * 60 + now.getMinutes()
 
@@ -185,7 +185,7 @@ function Dashboard() {
 
   const stats: Stat[] = [
     { icon: Calendar, tint: '#e6f0ff', color: '#2f6bff', label: `Bookings ${periodLabel}`, value: totalBookings, href: bookingsHref },
-    { icon: UserPlus, tint: '#e3f7ec', color: '#1fa971', label: 'My Students', value: myStudents, href: '/teacher-dashboard/students' },
+    { icon: UserPlus, tint: '#e3f7ec', color: '#1fa971', label: 'My Students', value: myStudents, href: '/TeacherDashboard/students' },
     { icon: CalendarClock, tint: '#fdf2d0', color: '#f5a524', label: `Open Slots ${periodLabel}`, value: openSlots, href: openHref },
     {
       icon: TrendingUp,
